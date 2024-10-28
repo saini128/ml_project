@@ -5,4 +5,6 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8080:80
+      - 8089:80
+      - 8092:8080
+    command: sleep infinity

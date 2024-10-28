@@ -69,14 +69,8 @@ def recognize_faces_in_frame(frame_path, roll_nos, encodings):
     return recognized_roll_nos
 
 def process_video_snapshots(video_path, snapshot_folder):
-    """Process video and return face detection results."""
-    # Capture snapshots
     snapshot_paths = capture_random_snaps(video_path, snapshot_folder)
-
-    # Load face encodings
     roll_nos, encodings = load_face_encodings()
-
-    # Recognize faces in snapshots
     face_detection_results = defaultdict(int)
 
     for snapshot_path in snapshot_paths:
@@ -85,8 +79,16 @@ def process_video_snapshots(video_path, snapshot_folder):
         for face in recognized_faces:
             if face != "Unknown":
                 face_detection_results[face] += 1
-    
-    return {
-        'total_snapshots': len(snapshot_paths),
-        'face_detections': dict(face_detection_results)
+
+    total_snapshots = len(snapshot_paths)
+    total_detections = sum(face_detection_results.values())
+    percentages = {
+        roll_no: min((count / total_snapshots) * 100, 100)
+        for roll_no, count in face_detection_results.items()
     }
+
+    return {
+        'total_snapshots': total_snapshots,
+        'percentages': percentages
+    }
+
